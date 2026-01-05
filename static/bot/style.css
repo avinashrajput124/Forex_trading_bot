@@ -1,0 +1,152 @@
+body {
+    background: #0d1117;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+.wrapper {
+    max-width: 1000px;
+    margin: auto;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+header h1 { font-size: 24px; color: #1f6feb; }
+.status { padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+.status.running { background: #0f9d58; color: rgb(0, 0, 0); }
+.status.stopped { background: #d81e14; color: rgb(2, 1, 1); }
+
+.grid {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.box {
+    flex: 1;
+    background: #161b22;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+.box h2 { font-size: 22px; margin-top: 10px; }
+
+.panel {
+    background: #161b22;
+    padding: 20px;
+    border-radius: 10px;
+}
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.row label { flex:1; font-weight: bold; }
+.row select, .row input { flex:2; padding:5px; border-radius:5px; border:none; }
+
+.price {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.price span { font-size: 18px; }
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+button {
+    flex:1;
+    padding: 10px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+button:hover { opacity: 0.85; }
+.buy { background: #0f9d58; }
+.sell { background: #d93025; }
+.start { background: #1f6feb; }
+.stop { background: rgb(211, 15, 15); }
+
+
+.stop {
+    background: rgb(231 22 22);
+}
+/* TABLE STYLE */
+table {
+    width:100%;
+    border-collapse: collapse;
+    margin-bottom:20px;
+    background:#161b22;
+    border-radius:10px;
+    overflow:hidden;
+}
+th, td {
+    padding:10px;
+    border:1px solid #0d1117;
+    text-align:center;
+}
+th {
+    background:#1f6feb;
+    color:#fff;
+}
+tbody tr:nth-child(even){
+    background:#0d1117;
+}
+tbody tr:nth-child(odd){
+    background:#161b22;
+}
+
+
+.refresh-icon{
+    cursor:pointer;
+    display:inline-block;
+    transition: transform 0.3s;
+}
+
+.refresh-icon.spin{
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin{
+    from{ transform: rotate(0deg); }
+    to{ transform: rotate(360deg); }
+}
+
+
+.ui-message {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    padding: 12px 18px;
+    border-radius: 6px;
+    z-index: 9999;
+    font-weight: bold;
+}
+
+.ui-message.success {
+    background: #1f7a1f;
+    color: #c8ffcc;
+}
+
+.ui-message.error {
+    background: #7a1f1f;
+    color: #ffd1d1;
+}
+
+
+.trade-msg {
+    margin: 10px auto;
+    padding: 10px 20px;
+    width: fit-content;
+    border-radius: 6px;
+    font-weight: bold;
+    display: none;
+    background: #111;
+}

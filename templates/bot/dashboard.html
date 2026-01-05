@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MT5 Trading Dashboard</title>
+    <link rel="stylesheet" href="{% static 'bot/style.css' %}">
+</head>
+
+<body>
+<div class="wrapper">
+
+<!-- ================= HEADER ================= -->
+<header class="header">
+    <h1>MT5 Auto Trading Dashboard<span id="account">(--) </span></h1>
+
+    <div class="header-right">
+        {% comment %} <span id="botStatus" class="status stopped" data-running="false">STOPPED</span> {% endcomment %}
+        {% comment %} <span id="runningStrategy" data-strategy="">--</span> {% endcomment %}
+        <span id="headerPL">P/L: --</span>
+
+        <!-- LOGOUT BUTTON -->
+        <a href="{% url 'logout' %}"
+            class="logout-btn"
+            onclick="confirmLogout(event)">
+                Logout
+            </a>
+
+    </div>
+</header>
+
+
+<!-- hidden bot id -->
+<input type="hidden" id="activeBotId" value="">
+
+<!-- ================= ACCOUNT INFO ================= -->
+<div class="grid">
+    <div class="box">
+        <p>Balance</p>
+        <h2 id="balance">--</h2>
+    </div>
+    <div class="box">
+        <p>Equity</p>
+        <h2 id="equity">--</h2>
+    </div>
+    <div class="box">
+        <p>Free Margin</p>
+        <h2 id="freeMargin">--</h2>
+    </div>
+    <div class="box">
+        <p>Open Trades P/L</p>
+        <h2 id="openPL">--</h2>
+    </div>
+</div>
+
+<!-- ================= RUNNING STRATEGIES ================= -->
+<h2>Running Strategies</h2>
+
+<table id="runningStrategies">
+<thead>
+<tr>
+    <th>#</th>
+    <th>Strategy</th>
+    <th>Symbol</th>
+    <th>TF</th>
+    <th>Lot</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td colspan="7" style="text-align:center;">No strategy running</td>
+</tr>
+</tbody>
+</table>
+<!-- ================= CONTROL PANEL ================= -->
+<div class="panel">
+    <div class="row">
+        <label>Symbol</label>
+        <select id="symbol"></select>
+    </div>
+
+    <div class="row">
+        <label>Timeframe</label>
+        <select id="tf">
+            <option value="M1">M1</option>
+            <option value="M5" selected>M5</option>
+            <option value="M15">M15</option>
+        </select>
+    </div>
+
+    <div class="row">
+        <label>Lot</label>
+        <input type="number" id="lot" value="0.01" step="0.01">
+    </div>
+
+    <div class="row">
+        <label>Strategy</label>
+        <select id="strategy">
+            <option value="">-- MANUAL MODE --</option>
+            <option value="ema_cross">EMA Crossover</option>
+            <option value="sma_cross">SMA Crossover</option>
+            <option value="trend">Trend Strategy</option>
+        </select>
+    </div>
+
+    <div class="price">
+        <span>BID: <b id="bid">--</b></span>
+        <span>ASK: <b id="ask">--</b></span>
+    </div>
+
+    <div class="buttons">
+        <button id="buyBtn" class="buy">BUY</button>
+        <button id="sellBtn" class="sell">SELL</button>
+        <button id="startBtn" class="start">START BOT</button>
+        <button id="stopBtn" class="stop">STOP BOT</button>
+    </div>
+</div>
+
+<!-- ================= OPEN TRADES ================= -->
+<h2>Open Trades</h2>
+<table id="openTrades">
+<thead>
+<tr>
+    <th>Ticket</th>
+    <th>Symbol</th>
+    <th>TF</th>
+    <th>Lot</th>
+    <th>Type</th>
+    <th>Open Time</th>
+    <th>Open</th>
+    <th>Current</th>
+    <th>Profit</th>
+    <th>SL</th>
+    <th>TP</th>
+    <th>Mode</th>
+    <th>Close</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<!-- ================= TRADE HISTORY ================= -->
+<h2 style="display:flex;align-items:center;gap:10px;">
+    Trade History
+    <span id="refreshHistory" class="refresh-icon">🔄</span>
+</h2>
+
+<table id="tradeHistory">
+<thead>
+<tr>
+    <th>Ticket</th>
+    <th>Symbol</th>
+    <th>Lot</th>
+    <th>Type</th>
+    <th>Open Time</th>
+    <th>Close Time</th>
+    <th>Open</th>
+    <th>Close</th>
+    <th>Profit</th>
+    <th>Mode</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<div id="historyPagination"></div>
+
+</div>
+<!-- ================= GLOBAL CONFIRM MODAL ================= -->
+<div id="globalConfirmModal" class="modal">
+    <div class="modal-box">
+        <h3 id="confirmTitle">Confirm Action</h3>
+        <p id="confirmMessage">Are you sure?</p>
+
+        <div class="modal-actions">
+            <button class="btn cancel" onclick="closeConfirmModal()">
+                Cancel
+            </button>
+            <button class="btn danger" id="confirmActionBtn">
+                Confirm
+            </button>
+        </div>
+    </div>
+</div>
+<!-- ================= GLOBAL TOAST CONTAINER ================= -->
+
+<div id="toastContainer"></div>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+<script src="{% static 'bot/js/dashboard.js' %}"></script>
+
+</body>
+</html>
