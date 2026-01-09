@@ -11,22 +11,44 @@ class MT5Account(models.Model):
 
 
 class TradingBot(models.Model):
+
     STRATEGIES = (
         ("ema_cross", "EMA Crossover"),
         ("ema_trend", "EMA Trend"),
         ("manual", "Manual"),
+        ("ema_rsi", "EMA - RSI Confirmation"),
+        ("adx_ema_mtf", "EMA MTF - ADX"),
+    )
+
+    SESSIONS = (
+        ("asia", "Asia Session"),
+        ("london", "London Session"),
+        ("newyork", "New York Session"),
+        ("london_ny", "London - New York Overlap"),
+        ("all", "All Sessions"),
     )
 
     account = models.ForeignKey(MT5Account, on_delete=models.CASCADE)
     symbol = models.CharField(max_length=20)
     timeframe = models.CharField(max_length=10)
     lot = models.FloatField()
-    strategy = models.CharField(max_length=20, choices=STRATEGIES)
+
+    strategy = models.CharField(
+        max_length=20,
+        choices=STRATEGIES
+    )
+
+    session = models.CharField(
+        max_length=20,
+        choices=SESSIONS,
+        default="all"
+    )
+
     is_running = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return f"{self.account.login} | {self.strategy} | {self.symbol}"
-
 
 
 class Tradehistory(models.Model):

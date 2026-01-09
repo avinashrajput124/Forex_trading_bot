@@ -87,6 +87,10 @@
             <option value="M1">M1</option>
             <option value="M5" selected>M5</option>
             <option value="M15">M15</option>
+            <option value="M30">M30</option>
+            <option value="H1">H1</option>
+            <option value="H4">H4</option>
+            <option value="D1">1 Day</option>
         </select>
     </div>
 
@@ -94,15 +98,64 @@
         <label>Lot</label>
         <input type="number" id="lot" value="0.01" step="0.01">
     </div>
-
     <div class="row">
-        <label>Strategy</label>
+    <label>Strategy</label>
         <select id="strategy">
             <option value="">-- MANUAL MODE --</option>
+
+            <!-- Existing -->
             <option value="ema_cross">EMA Crossover</option>
-            <option value="sma_cross">SMA Crossover</option>
-            <option value="trend">Trend Strategy</option>
+            <option value="ema_trend">EMA Trend</option>
+            <!-- Add-on -->
+            <option value="ema_rsi">EMA - RSI Confirmation</option>
+            <option value="adx_ema_mtf">EMA - ADX</option>
         </select>
+    </div>
+    <div class="row" id="sessionRow" style="display:none;">
+        <label>Trading Session</label>
+        <select id="session">
+            <option value="all">Any Session</option>
+            <option value="asia">Asia Open</option>
+            <option value="london">London Open</option>
+            <option value="newyork">New York Open</option>
+            <option value="london_ny">London–NY Overlap</option>
+        </select>
+    </div>
+
+    <div class="row">
+        <label>
+            <input type="checkbox" id="enableBacktest">
+            Enable Backtest
+        </label>
+    </div>
+
+    <div id="backtestDates" style="display:none;">
+        <div class="row">
+            <label>From Date</label>
+            <input type="date" id="fromDate">
+        </div>
+
+        <div class="row">
+            <label>To Date</label>
+            <input type="date" id="toDate">
+        </div>
+         <!-- ================= XM History Info ================= -->
+        <div class="row" style="margin-top:10px; font-size:0.9em; color:#555;">
+            <strong>Approx. Historical Data (XM Broker):</strong>
+            <ul style="margin:5px 0 0 15px; padding:0;">
+                <li>M1: ~1–3 months</li>
+                <li>M5: ~6–12 months</li>
+                <li>M15: ~2–3 years</li>
+                <li>M30: ~3–5 years</li>
+                <li>H1: ~5–10 years</li>
+                <li>H4: ~10–15 years</li>
+                <li>D1: ~15+ years</li>
+            </ul>
+        </div>
+
+        <div class="buttons">
+            <button id="backtestBtn" class="start">RUN BACKTEST</button>
+        </div>
     </div>
 
     <div class="price">
@@ -116,6 +169,43 @@
         <button id="startBtn" class="start">START BOT</button>
         <button id="stopBtn" class="stop">STOP BOT</button>
     </div>
+</div>
+
+<!-- ================= BACKTEST RESULT ================= -->
+<div id="backtestResultWrapper" style="display:none;">
+
+<h2>Backtest Result</h2>
+
+<div id="backtestReport" class="grid">
+    <div class="box">
+        <p>Balance</p>
+        <h2 id="btbalance">--</h2>
+    </div>
+    <div class="box">
+        <p>Total Trades</p>
+        <h2 id="btTrades">--</h2>
+    </div>
+
+    <div class="box">
+        <p>Winning Trades</p>
+        <h2 id="btWins">--</h2>
+    </div>
+
+    <div class="box">
+        <p>Losing Trades</p>
+        <h2 id="btLoss">--</h2>
+    </div>
+
+    <div class="box">
+        <p>Win Rate</p>
+        <h2 id="btWinRate">--%</h2>
+    </div>
+
+    <div class="box">
+        <p>Net Profit</p>
+        <h2 id="btProfit">--</h2>
+    </div>
+</div>
 </div>
 
 <!-- ================= OPEN TRADES ================= -->

@@ -13,4 +13,6 @@ urlpatterns = [
     path("start/", start_bot),
     path("stop/", stop_bot),
     path("trade_history/", trade_history),
+    path("backtest/", run_backtest_api),
+
 ]

@@ -8,7 +8,7 @@ from .models import *
 from .trading_engine import *
 from .utils import *
 from django.core.paginator import Paginator
-
+from .backtest_engine import run_backtest
 BOT_REGISTRY = {}
 
 
@@ -132,24 +132,58 @@ def account_info(request):
 
 
 # ---------- SYMBOLS ----------
+# ---------- SYMBOLS ----------
 def broker_symbols(request):
     if not ensure_mt5(request):
         return api_error("MT5 not connected")
+
     allowed_symbols = {
+        # ---- GOLD ----
         "XAUUSD",
+        "XAUUSDm",
+        "XAUUSD.",
+        "GOLD",
+        "GOLDm",
+
+        # ---- FOREX ----
         "GBPUSD",
         "EURUSD",
         "USDJPY",
         "GBPJPY",
+
+        # ---- CRYPTO ----
         "BTCUSD",
-        "BTCUSDm",  
-        "BTCUSD."
+        "BTCUSDm",
+        "BTCUSD.",
     }
+
     symbols = mt5.symbols_get()
     data = [s.name for s in symbols if s.name in allowed_symbols]
 
     return JsonResponse({"symbols": data})
 
+
+@csrf_exempt
+def run_backtest_api(request):
+    if request.method != "POST":
+        return api_error("Invalid request")
+    data = json.loads(request.body)
+    print("Backtest API Data:", data)
+
+    result = run_backtest(
+        symbol=data["symbol"],
+        timeframe_key=data["timeframe"],
+        strategy=data["strategy"],
+        session=data.get("session", "all"),
+        from_date=data["from_date"],
+        to_date=data["to_date"],
+        lot=float(data.get("lot", 0.01)),
+         sl_pips=20,  # stop-loss in pips
+    tp_pips=40 
+    )
+    print("Backtest Result:", result)
+
+    return JsonResponse(result)
 
 # ---------- MANUAL TRADE ----------
 def manual_trade(request):
@@ -171,6 +205,7 @@ def manual_trade(request):
         try:
             lot = float(lot)
             if lot <= 0:
+                
                 return api_error("Lot must be greater than 0")
         except ValueError:
             return api_error("Lot must be numeric")
@@ -224,6 +259,7 @@ def manual_trade(request):
             "magic": 999,
             "comment": "Manual Trade",
             "type_time": mt5.ORDER_TIME_GTC,
+            "type_filling": mt5.ORDER_FILLING_IOC, 
             # "type_filling": get_filling_mode(symbol),
         }
 
@@ -296,6 +332,7 @@ def close_trade(request):
         "magic": 0,
         "comment": "Closed via dashboard",
         "type_time": mt5.ORDER_TIME_GTC,
+         "type_filling": mt5.ORDER_FILLING_IOC, 
     }
 
     result = mt5.order_send(request_mt5)
@@ -331,6 +368,7 @@ def start_bot(request):
         tf = request.GET.get("tf")
         lot = request.GET.get("lot")
         strategy = request.GET.get("strategy")
+        session = request.GET.get("session", "any")
 
         if not all([symbol, tf, lot, strategy]):
             return api_error("Missing required parameters")
@@ -406,6 +444,7 @@ def start_bot(request):
                 timeframe=tf,
                 lot=lot,
                 strategy=strategy,
+                session=session,
                 is_running=True
             )
         else:
@@ -555,3 +594,6 @@ def trade_history(request):
 #         "current_page": page,
 #         "total_pages": paginator.num_pages
 #     })
+
+
+
