@@ -43,10 +43,11 @@ function connect(){
     .then(data => {
         btn.disabled = false;
         if(data.status === "success"){
-            showMessage("✔ " + data.message, "#22c55e");
+            showMessage("✔ " + data.comment, "#22c55e");
             setTimeout(() => { window.location.href = ""; }, 900);
         } else {
-            showMessage("✖ " + data.message, "#ef4444");
+            console.log("data",data)
+            showMessage("✖ " + data.comment, "#ef4444");
         }
     })
     .catch(() => {
